@@ -6,7 +6,7 @@
 /*   By: roberodr <roberodr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/15 14:13:50 by roberodr          #+#    #+#             */
-/*   Updated: 2023/03/16 12:27:05 by roberodr         ###   ########.fr       */
+/*   Updated: 2023/03/16 14:31:10 by roberodr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,14 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/wait.h>
+
+int ft_checkdir(*s1)
+{
+	char line[62] = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki"
+	
+	strlcpy
+	strchr 
+}
 
 void ft_strcpy (char *src, char *dst)
 {
@@ -33,27 +41,26 @@ void ft_strcpy (char *src, char *dst)
 
 int main (int argc, char **argv)
 {
-	//printf("AQUI");
-
+	
 	int outfile;
 	int infile;
 	char **ls;
 	char **wc;
 	 char s1[7];
 
+	if (argc < 3 )
+	{
+		write(1, "error", 5);
+		return(-1);
+	}	
+	
+
 	ft_strcpy(argv[2], s1);
 	outfile = open(s1 , O_WRONLY | O_CREAT, 0777);
 	infile = open(argv[1], O_RDONLY);
 	if (!infile)
 		return(-1);
-
-	if (argc < 3)
-	{
-	printf("<%s>", argv[2]);
-		write(1, "error", 5);
-		return(-1);
-	}	
-
+													// comprobar accesos de ruta para comandos
 		
 	wc = malloc(3 * sizeof(char *));
 	wc[0] = strdup("/usr/bin/wc");
