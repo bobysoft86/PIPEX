@@ -5,73 +5,34 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: roberodr <roberodr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/14 16:15:57 by roberodr          #+#    #+#             */
-/*   Updated: 2023/03/15 11:34:17 by roberodr         ###   ########.fr       */
+/*   Created: 2023/03/15 14:13:50 by roberodr          #+#    #+#             */
+/*   Updated: 2023/04/14 18:14:20 by roberodr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/wait.h>
+#include "pipex.h"
 
-int ft_strcmp(char *s1, char *s2)
+int	main(int argc, char **argv, char **envp)
 {
-	int i;
-	i = 0;
-	while ( s1[i] !='\0')
-		{
-			if(s1[i] != s2[i]) 			
-				return(0);
-			i++;
-		}
-	return(1);
-}
+	t_index	i;
 
-
-int main (int argc, char **argv, char *env[])
-{
-	char *ls;
-	char *s2;
-//printf("esto es argv2 %d", &argv[2]);
-	s2 = "ls";
-
-	if(ft_strcmp(argv[1],s2) == 1)
-		ls = "/bin/ls";
-	
-	char	**test;
-	test = malloc(3 * sizeof(char *));
-	test[0] = ls;
-	test[1] = argv[2];
-	// strcpy(test[0], ls);
-	// strcpy(test[1], argv[3]);
-	test[2] = NULL;
-	
-	if(argc == 3)
-	{
-		pid_t pid;
-
-
-		pid = fork();
-
-		if (pid == -1)
-			return (-1);
-
-		if (pid == 0)
-		{
-			int val = execve(test[0],test,NULL);
-			
-				if (val == -1)
-					return(printf("error"));
-		}
-		else 
-		{
-			wait(NULL);
-			printf("done");
-		}
-	return(0);
-	
-	}
+	if (argc != 5)
+		ft_error(strerror(errno));
+	i.infile = open(argv[1], O_RDONLY);
+	if (i.infile < 0)
+		i.infile = open(argv[argc - 1], O_TRUNC | O_CREAT | O_RDWR, 0000644);
+	i.outfile = open(argv[argc - 1], O_TRUNC | O_CREAT | O_RDWR, 0000644);
+	if (i.outfile < 0)
+		ft_error(strerror(errno));
+	i.cmd1 = ft_split_cmd_arg(argv[2]);
+	i.cmd2 = ft_split_cmd_arg(argv[3]);
+	if (pipe(i.fd) == -1)
+		return (1);
+	i.pid1 = fork();
+	if (i.pid1 < 0)
+		return (0);
+	ft_child(i, envp);
+	ft_father(i, envp);
+	waitpid(i.pid1, NULL, 0);
+	return (1);
 }
